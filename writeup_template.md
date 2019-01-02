@@ -45,11 +45,11 @@ You're reading it! and here is a link to my [project code](https://github.com/ud
 I used the pandas library to calculate summary statistics of the traffic
 signs data set:
 
-* The size of training set is ?
-* The size of the validation set is ?
-* The size of test set is ?
-* The shape of a traffic sign image is ?
-* The number of unique classes/labels in the data set is ?
+* The size of training set is 34799
+* The size of the validation set is 
+* The size of test set is 12630
+* The shape of a traffic sign image is (32, 32, 3)
+* The number of unique classes/labels in the data set is 43
 
 #### 2. Include an exploratory visualization of the dataset.
 
@@ -61,7 +61,9 @@ Here is an exploratory visualization of the data set. It is a bar chart showing 
 
 #### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
-As a first step, I decided to convert the images to grayscale because ...
+I'm doing a preprocessing of two steps:
+1. Convert image from RGB to Gray scale with the formula: 29.9% of Red, 58.7% of Green and 11.4% of Blue. (NOTE: I tried using OpenCV for the conversion but my training model was not updating).
+2. Normalize the grayscale image with Min-Max scaling to a range of [0.1, 0.9], as seen in the previous lessons.
 
 Here is an example of a traffic sign image before and after grayscaling.
 
@@ -82,32 +84,48 @@ The difference between the original data set and the augmented data set is the f
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
-My final model consisted of the following layers:
+My final model is based on the LeNet architecture seeing in the previous lessons, in which I added a few modifications due to trial-error during the Training phase, like avg pooling or dropout to avoid overfitting.
+The model consists of the following layers:
 
-| Layer         		|     Description	        					| 
+| Layer         	|     Description	        		| 
 |:---------------------:|:---------------------------------------------:| 
-| Input         		| 32x32x3 RGB image   							| 
-| Convolution 3x3     	| 1x1 stride, same padding, outputs 32x32x64 	|
-| RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
-|						|												|
+| Input         	| 32x32x1 Grayscale Normalized image		| 
+| Layer1 Convolution 2d	| 1x1 stride, valid padding, outputs 28x28x6 	|
+| RELU			|						|
+| Max pooling	      	| 2x2 stride,  outputs 14x14x6  		|
+| Layer2 Convolution 2d	| 1x1 stride, valid padding, outputs 10x10x16 	|
+| RELU			|						|
+| Max pooling	      	| 2x2 stride,  outputs 5x5x16   		|
+| Flatten		| outputs 400					|
+| Layer3 FullyConnected | outputs 120					|
+| MatMul y RELU		|						|
+| Dropout 		|						|
+| Layer4 FullyConnected | outputs 84					|
+| MatMul y RELU		|						|
+| Dropout 		|						|
+| Layer5 FullyConnected | outputs 43					|
+| MatMul		|						|
+|:---------------------:|:---------------------------------------------:| 
  
 
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an ....
+To train the model, I used the following parameters: 
+1. Epochs = 20
+2. Learning rate = 0.005
+3. Batch Size = 256
+4. Mu = 0, Sigma = 0.1
+
+I came up with these values after experimenting during the training phase. My initial values where the sames as the proposed LeNet architecture.
+
 
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
+* training set accuracy of 0.944
+* validation set accuracy of 0.944
+* test set accuracy of 0.916
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
